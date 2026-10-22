@@ -1,4 +1,5 @@
-package co.edu.univalle.poe.mvc;
+package co.edu.univalle.poe.mvc.model;
+
 import java.util.LinkedList;
 
 /**
