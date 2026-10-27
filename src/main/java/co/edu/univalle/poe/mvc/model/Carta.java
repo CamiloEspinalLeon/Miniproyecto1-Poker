@@ -13,8 +13,14 @@ public class Carta {
     }
 
     //Getters (para consultar los datos desde otras clases)
-    public String getValor() {
-        return valor;
+    public int getValor() {
+        if ("AJQK".contains(valor)){
+            if (valor == "A"){
+                return 11;
+            }
+            return 10;
+        }
+        return Integer.parseInt(valor);
     }
 
     public String getPalo() {
