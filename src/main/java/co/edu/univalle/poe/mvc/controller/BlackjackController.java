@@ -1,0 +1,140 @@
+package co.edu.univalle.poe.mvc.controller;
+
+import co.edu.univalle.poe.mvc.model.Carta;
+import co.edu.univalle.poe.mvc.model.Repartir;
+import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+
+import java.util.LinkedList;
+
+public class BlackjackController {
+
+    private static final String RUTA_CARTAS = "/co/edu/univalle/poe/mvc/images/cards/";
+
+    // --- Elementos de la vista (los ids están en el FXML) ---
+    @FXML private HBox hboxCompu;
+    @FXML private HBox hboxJugador;
+    @FXML private ImageView compuCarta1, compuCarta2;
+    @FXML private ImageView jugadorCarta1, jugadorCarta2, jugadorCarta3, jugadorCarta4;
+    @FXML private Button btnIniciar, btnPedir, btnPlantar;
+    @FXML private Label lblEstado;
+
+    private ImageView[] casillasCompu;
+    private ImageView[] casillasJugador;
+    private int hijosCompu;      // cuántos hijos tiene cada HBox al abrir la ventana
+    private int hijosJugador;
+    private Image reverso;       // blank.png
+    private Repartir ronda;      // el modelo de la partida actual
+
+    /** JavaFX la llama sola después de cargar el FXML. */
+    @FXML
+    public void initialize() {
+        lblEstado.setWrapText(true);
+        casillasCompu = new ImageView[]{compuCarta1, compuCarta2};
+        casillasJugador = new ImageView[]{jugadorCarta1, jugadorCarta2, jugadorCarta3, jugadorCarta4};
+        hijosCompu = hboxCompu.getChildren().size();
+        hijosJugador = hboxJugador.getChildren().size();
+        reverso = new Image(getClass().getResourceAsStream(RUTA_CARTAS + "blank.png"));
+
+        btnPedir.setDisable(true);
+        btnPlantar.setDisable(true);
+    }
+
+    // ===================== Botones =====================
+
+    @FXML
+    private void onIniciarRonda() {
+        ronda = new Repartir();                       // mazo nuevo + 2 cartas al jugador
+
+        mostrarMano(hboxCompu, casillasCompu, hijosCompu, new LinkedList<>());   // compu sin cartas (blank)
+        mostrarMano(hboxJugador, casillasJugador, hijosJugador, ronda.getMano());
+
+        btnIniciar.setDisable(true);
+        btnPedir.setDisable(false);
+        btnPlantar.setDisable(false);
+        lblEstado.setText("Tu turno. Puntaje: " + ronda.getPuntajeJugador());
+
+        if (ronda.getPuntajeJugador() == 21) {        // 21 -> el turno termina solo
+            onPlantarse();
+        }
+    }
+
+    @FXML
+    private void onPedirCarta() {
+        if (ronda == null || !ronda.pedirCarta()) {
+            return;
+        }
+        mostrarMano(hboxJugador, casillasJugador, hijosJugador, ronda.getMano());
+
+        int puntaje = ronda.getPuntajeJugador();
+        if (puntaje > 21) {
+            lblEstado.setText("Te pasaste con " + puntaje + ". ¡Pierdes!");
+            terminarRonda();
+        } else if (puntaje == 21) {
+            onPlantarse();
+        } else {
+            lblEstado.setText("Tu turno. Puntaje: " + puntaje);
+        }
+    }
+
+    @FXML
+    private void onPlantarse() {
+        if (ronda == null) {
+            return;
+        }
+        ronda.Plantar();                              // el computador recibe sus 2 cartas
+        mostrarMano(hboxCompu, casillasCompu, hijosCompu, ronda.getManoCompu());
+
+        lblEstado.setText("Te plantaste con " + ronda.getPuntajeJugador()
+                + ". Computadora: " + ronda.getPuntajeCompu());
+        terminarRonda();
+    }
+
+    // ===================== Ayudas =====================
+
+    /** Deja la pantalla lista para otra ronda. */
+    private void terminarRonda() {
+        btnPedir.setDisable(true);
+        btnPlantar.setDisable(true);
+        btnIniciar.setDisable(false);
+    }
+
+    /**
+     * Dibuja una mano en su HBox: primero la deja en blanco y luego pone
+     * la imagen de cada carta. Si la mano tiene más cartas que casillas,
+     * crea ImageViews nuevos justo después de la última casilla.
+     */
+    private void mostrarMano(HBox hbox, ImageView[] casillas, int hijosOriginales, LinkedList<Carta> mano) {
+        // 1. Quitar las casillas extra que se hayan creado antes
+        while (hbox.getChildren().size() > hijosOriginales) {
+            hbox.getChildren().remove(casillas.length);
+        }
+
+        //2. En blanco
+
+        for (ImageView casilla : casillas) {
+            casilla.setImage(reverso);
+        }
+        // 3. Poner las cartas
+        int i = 0;
+        for (Carta carta : mano) {
+            Image imagen = new Image(getClass().getResourceAsStream(RUTA_CARTAS + carta.getNombreImagen()));
+            if (i < casillas.length) {
+                casillas[i].setImage(imagen);
+            } else {
+                ImageView nueva = new ImageView(imagen);
+                nueva.setFitHeight(150);
+                nueva.setFitWidth(200);
+                nueva.setPreserveRatio(true);
+                HBox.setMargin(nueva, new Insets(20));
+                hbox.getChildren().add(i, nueva);
+            }
+            i++;
+        }
+    }
+}

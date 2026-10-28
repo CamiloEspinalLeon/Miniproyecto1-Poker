@@ -14,12 +14,8 @@ public class Carta {
 
     //Getters (para consultar los datos desde otras clases)
     public int getValor() {
-        if ("AJQK".contains(valor)){
-            if (valor == "A"){
-                return 11;
-            }
-            return 10;
-        }
+        if (esAs()) return 11;
+        if (valor.equals("J") || valor.equals("Q") || valor.equals("K")) return 10;
         return Integer.parseInt(valor);
     }
     public boolean esAs() {
