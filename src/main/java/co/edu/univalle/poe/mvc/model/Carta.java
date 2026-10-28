@@ -22,6 +22,13 @@ public class Carta {
         }
         return Integer.parseInt(valor);
     }
+    public boolean esAs() {
+        return valor.equals("As");
+    }
+
+    public String getNombreImagen() {
+        return valor + palo + ".png";
+    }
 
     public String getPalo() {
         return palo;
