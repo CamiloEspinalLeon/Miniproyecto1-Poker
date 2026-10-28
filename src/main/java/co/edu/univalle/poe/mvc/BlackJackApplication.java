@@ -7,10 +7,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class BlackJackApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("view/blackjack-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(BlackJackApplication.class.getResource("view/blackjack-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("21 Blackjack");
         stage.setScene(scene);

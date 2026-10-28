@@ -45,7 +45,7 @@ public class BlackjackController {
         btnPlantar.setDisable(true);
     }
 
-    // ===================== Botones =====================
+    // Botones
 
     @FXML
     private void onIniciarRonda() {
@@ -87,11 +87,24 @@ public class BlackjackController {
         if (ronda == null) {
             return;
         }
-        ronda.Plantar();                              // el computador recibe sus 2 cartas
+
+        ronda.Plantar();                                   // 1. el computador recibe sus 2 cartas
         mostrarMano(hboxCompu, casillasCompu, hijosCompu, ronda.getManoCompu());
 
-        lblEstado.setText("Te plantaste con " + ronda.getPuntajeJugador()
-                + ". Computadora: " + ronda.getPuntajeCompu());
+        int jugador = ronda.getPuntajeJugador();
+        int compu = ronda.getPuntajeCompu();
+        String resultado;
+
+        if (compu > 21 || jugador > compu) {               // 2. ahora sí se compara
+            resultado = "¡GANASTE!";
+        } else if (jugador < compu) {
+            resultado = "PERDISTE";
+        } else {
+            resultado = "EMPATE";
+        }
+
+        lblEstado.setText("Te plantaste con " + jugador
+                + ". Computadora: " + compu + ". " + resultado);
         terminarRonda();
     }
 
