@@ -188,7 +188,7 @@
                         <Insets top="20.0" />
                      </VBox.margin>
                   </TextField>
-                  <Button alignment="TOP_CENTER" mnemonicParsing="false" text="APOSTAR" onAction="#onApostar">
+                  <Button fx:id="btnApostar" alignment="TOP_CENTER" mnemonicParsing="false" text="APOSTAR" onAction="#onApostar">
                      <font>
                         <Font name="Calibri Bold" size="20.0" />
                      </font>

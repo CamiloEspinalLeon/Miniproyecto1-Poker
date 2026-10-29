@@ -41,6 +41,7 @@ public class BlackjackController {
     @FXML private Button btnReglas;
     @FXML private TextField txtSaldo;
     @FXML private TextField txtMontoApuesta;
+    @FXML private Button btnApostar;
 
 
     private ImageView[] casillasCompu;
@@ -62,7 +63,7 @@ public class BlackjackController {
 
         btnPedir.setDisable(true);
         btnPlantar.setDisable(true);
-
+        btnIniciar.setDisable(true);
         actualizarSaldoEnVista();
     }
 
@@ -139,6 +140,7 @@ public class BlackjackController {
         int puntaje = ronda.getPuntajeJugador();
         if (puntaje > 21) {
             lblEstado.setText("Te pasaste con " + puntaje + ". ¡Pierdes!");
+            apuesta.perderApuesta();
             terminarRonda();
         } else if (puntaje == 21) {
             onPlantarse();
@@ -156,16 +158,31 @@ public class BlackjackController {
         ronda.Plantar();                                   // 1. el computador recibe sus 2 cartas
         mostrarMano(hboxCompu, casillasCompu, hijosCompu, ronda.getManoCompu());
 
+        boolean bjJugador = ronda.esBlackjackJugador();
+        boolean bjCompu = ronda.esBlackjackCompu();
+
         int jugador = ronda.getPuntajeJugador();
         int compu = ronda.getPuntajeCompu();
         String resultado;
 
-        if (compu > 21 || jugador > compu) {               // 2. ahora sí se compara
+        if (bjJugador && bjCompu) {                        // ambos Blackjack: empate
+            resultado = "EMPATE (ambos tienen Blackjack)";
+            apuesta.empatarApuesta();
+        } else if (bjJugador) {                            // solo el jugador: victoria con Blackjack
+            resultado = "¡BLACKJACK! ¡GANASTE!";
+            apuesta.ganarConBlackjack();
+        } else if (bjCompu) {                              // solo el computador
+            resultado = "La computadora tiene Blackjack. PERDISTE";
+            apuesta.perderApuesta();
+        } else if (compu > 21 || jugador > compu) {        // victoria ordinaria
             resultado = "¡GANASTE!";
-        } else if (jugador < compu) {
+            apuesta.ganarApuesta();
+        } else if (jugador < compu) {                      // derrota
             resultado = "PERDISTE";
-        } else {
+            apuesta.perderApuesta();
+        } else {                                           // mismo puntaje
             resultado = "EMPATE";
+            apuesta.empatarApuesta();
         }
 
         lblEstado.setText("Te plantaste con " + jugador
@@ -179,7 +196,18 @@ public class BlackjackController {
     private void terminarRonda() {
         btnPedir.setDisable(true);
         btnPlantar.setDisable(true);
-        btnIniciar.setDisable(false);
+        btnIniciar.setDisable(true);              // para otra ronda hay que apostar de nuevo
+        actualizarSaldoEnVista();
+
+        if (apuesta.puedeApostar()) {             // se reabre la apuesta con el saldo actualizado
+            txtMontoApuesta.clear();
+            txtMontoApuesta.setDisable(false);
+            btnApostar.setDisable(false);
+        } else {
+            lblEstado.setText(lblEstado.getText()
+                    + "No tienes fichas suficientes para otra ronda.");
+        }
+
     }
 
     /**
@@ -240,6 +268,9 @@ public class BlackjackController {
                 actualizarSaldoEnVista();
                 lblEstado.setText("Apuesta realizada: $" + monto);
                 txtMontoApuesta.clear();
+                txtMontoApuesta.setDisable(true);
+                btnApostar.setDisable(true);
+                btnIniciar.setDisable(false);
             }
 
         } catch (NumberFormatException e) {
