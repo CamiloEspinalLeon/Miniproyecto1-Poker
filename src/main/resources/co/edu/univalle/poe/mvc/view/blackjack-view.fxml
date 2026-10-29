@@ -225,7 +225,7 @@
                         <Insets top="20.0" />
                      </VBox.margin>
                   </Button>
-                  <Button alignment="TOP_CENTER" mnemonicParsing="false" text="REGLAS ">
+                  <Button fx:id="btnReglas" alignment="TOP_CENTER" mnemonicParsing="false" text="REGLAS " onAction="#mostrarReglas">
                      <font>
                         <Font name="Calibri Bold" size="20.0" />
                      </font>

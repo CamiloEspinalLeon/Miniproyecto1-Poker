@@ -3,13 +3,19 @@ package co.edu.univalle.poe.mvc.controller;
 import co.edu.univalle.poe.mvc.model.Carta;
 import co.edu.univalle.poe.mvc.model.Repartir;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class BlackjackController {
@@ -23,6 +29,7 @@ public class BlackjackController {
     @FXML private ImageView jugadorCarta1, jugadorCarta2, jugadorCarta3, jugadorCarta4;
     @FXML private Button btnIniciar, btnPedir, btnPlantar;
     @FXML private Label lblEstado;
+    @FXML private Button btnReglas;
 
     private ImageView[] casillasCompu;
     private ImageView[] casillasJugador;
@@ -63,6 +70,24 @@ public class BlackjackController {
             onPlantarse();
         }
     }
+
+    @FXML
+    private void mostrarReglas(){
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/co/edu/univalle/poe/mvc/view/reglas-view.fxml"));
+            Stage ventanaReglas = new Stage();
+            ventanaReglas.setScene(new Scene(loader.load()));
+            ventanaReglas.setTitle("Reglas del Blackjack");
+            ventanaReglas.initOwner(btnReglas.getScene().getWindow());   // pertenece a la ventana del juego
+            ventanaReglas.setResizable(false);
+            ventanaReglas.showAndWait();                                 // al cerrarla, se sigue donde se estaba
+        } catch (IOException e) {
+            lblEstado.setText("No se pudo abrir la ventana de reglas.");
+            e.printStackTrace();
+        }
+    }
+
 
     @FXML
     private void onPedirCarta() {
