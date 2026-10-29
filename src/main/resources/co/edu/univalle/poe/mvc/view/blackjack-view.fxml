@@ -217,7 +217,7 @@
             </VBox>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button alignment="TOP_CENTER" mnemonicParsing="false" text="SALIR " textFill="RED">
+                  <Button fx:id="btnSalir" onAction="#onSalir" alignment="TOP_CENTER" mnemonicParsing="false" text="SALIR " textFill="RED">
                      <font>
                         <Font name="Calibri Bold" size="20.0" />
                      </font>

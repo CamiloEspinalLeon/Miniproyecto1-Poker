@@ -4,6 +4,8 @@ import co.edu.univalle.poe.mvc.model.Apuesta;
 import co.edu.univalle.poe.mvc.model.Carta;
 import co.edu.univalle.poe.mvc.model.Repartir;
 import javafx.fxml.FXML;
+
+//imports para el boton de reglas/ la nueva ventana
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -16,6 +18,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+//imports para el botón de salir
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -76,6 +83,29 @@ public class BlackjackController {
         if (ronda.getPuntajeJugador() == 21) {        // 21 -> el turno termina solo
             onPlantarse();
         }
+    }
+    /** Botón SALIR. */
+    @FXML
+    private void onSalir() {
+        if (confirmarSalida()) {
+            Platform.exit();          // termina la aplicación
+        }
+    }
+
+    //Pregunta al usuario si quiere cerrar el juego.
+    // Es public porque también la usa HelloApplication para la X de la ventana.
+    public boolean confirmarSalida() {
+        ButtonType si = new ButtonType("Sí, cerrar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.initOwner(hboxCompu.getScene().getWindow());   // la alerta queda sobre el juego
+        alerta.setTitle("Cerrar juego");
+        alerta.setHeaderText("¿Seguro que quieres cerrar el juego?");
+        alerta.setContentText("La partida actual no se guardará.");
+        alerta.getButtonTypes().setAll(si, cancelar);
+
+        return alerta.showAndWait().orElse(cancelar) == si;
     }
 
     @FXML
