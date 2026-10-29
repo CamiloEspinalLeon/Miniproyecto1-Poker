@@ -44,11 +44,9 @@ public class Repartir {
         System.out.println("El jugador se planto");
 
         for (int i = 0; i < CARTAS_INICIALES; i++) {
-            Carta carta = mazo.repartirCarta();
-            manoCompu.addLast(carta);
-            compuPuntaje += carta.getValor();
-            compuAs += carta.esAs() ? 1 : 0;
+            recibirCompu(mazo.repartirCarta());
         }
+        turnoCompu();                       // después de sus 2 cartas, decide si pide más
     }
 
 
@@ -57,6 +55,20 @@ public class Repartir {
         mano.addLast(carta);
         jugadorPuntaje += carta.getValor();
         jugadorAs += carta.esAs() ? 1 : 0;
+    }
+
+    private void recibirCompu(Carta carta) {
+        manoCompu.addLast(carta);
+        compuPuntaje += carta.getValor();
+        compuAs += carta.esAs() ? 1 : 0;
+    }
+    private void turnoCompu() {
+        if (esBlackjackJugador()) {
+            return;                               // la ronda se resuelve con sus 2 cartas iniciales
+        }
+        while (getPuntajeCompu() < 17 && mazo.hayCartasDisponibles()) {
+            recibirCompu(mazo.repartirCarta());
+        }
     }
 
     /**
