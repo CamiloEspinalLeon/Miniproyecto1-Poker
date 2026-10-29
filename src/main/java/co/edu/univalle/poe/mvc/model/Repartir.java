@@ -80,6 +80,41 @@ public class Repartir {
         return puntaje;
     }
 
+    // ---------- Jugadas especiales (solo miran las DOS primeras cartas) ----------
+
+    /** Blackjack: un as y una carta de valor 10 (10, J, Q o K) en exactamente dos cartas. */
+    public static boolean esBlackjack(LinkedList<Carta> m) {
+        if (m.size() != 2) {
+            return false;
+        }
+        Carta primera = m.get(0);
+        Carta segunda = m.get(1);
+        return (primera.esAs() && segunda.getValor() == 10) || (segunda.esAs() && primera.getValor() == 10);
+    }
+
+    /** Veinte y medio: una figura (J, Q o K) y un 4, en cualquier orden*/
+    public static boolean esVeinteYMedio(LinkedList<Carta> m) {
+        if (m.size() != 2) {
+            return false;
+        }
+        Carta a = m.get(0);
+        Carta b = m.get(1);
+        return (a.esFigura() && b.esCuatro()) || (b.esFigura() && a.esCuatro());
+    }
+
+    public boolean esBlackjackJugador() {
+        return esBlackjack(mano);
+    }
+    public boolean esBlackjackCompu() {
+        return esBlackjack(manoCompu);
+    }
+    public boolean esVeinteYMedioJugador() {
+        return esVeinteYMedio(mano);
+    }
+    public boolean esVeinteYMedioCompu() {
+        return esVeinteYMedio(manoCompu);
+    }
+
     public int getPuntajeJugador() {
         return ajustarAs(jugadorPuntaje, jugadorAs);
     }

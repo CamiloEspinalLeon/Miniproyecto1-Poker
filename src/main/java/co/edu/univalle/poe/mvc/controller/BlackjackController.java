@@ -80,8 +80,11 @@ public class BlackjackController {
         btnPlantar.setDisable(false);
         lblEstado.setText("Tu turno. Puntaje: " + ronda.getPuntajeJugador());
 
-        if (ronda.getPuntajeJugador() == 21) {        // 21 -> el turno termina solo
-            onPlantarse();
+        if (ronda.esBlackjackJugador()) {
+            lblEstado.setText("¡BLACKJACK!");
+            onPlantarse();                       // Con Blackjack el turno del computador es automático
+        } else if (ronda.esVeinteYMedioJugador()) {
+            lblEstado.setText("¡Veinte y medio! (14) Puedes pedir carta o plantarte.");
         }
     }
     /** Botón SALIR. */

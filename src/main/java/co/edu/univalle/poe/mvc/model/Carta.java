@@ -6,6 +6,16 @@ public class Carta {
     private String valor;
     private String palo;
 
+
+    //Metodos para distinguir si es figura (Para veinte y medio)
+    public boolean esFigura() {
+        return valor.equals("J") || valor.equals("Q") || valor.equals("K");
+    }
+
+    public boolean esCuatro() {
+        return valor.equals("4");
+    }
+
     //Metodo constructor, (para asignar en esas dos variables, los dos valores que se asignen):
     public Carta(String valor, String palo){
         this.valor = valor;
