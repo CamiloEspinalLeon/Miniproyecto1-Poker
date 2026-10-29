@@ -1,5 +1,6 @@
 package co.edu.univalle.poe.mvc.controller;
 
+import co.edu.univalle.poe.mvc.model.Apuesta;
 import co.edu.univalle.poe.mvc.model.Carta;
 import co.edu.univalle.poe.mvc.model.Repartir;
 import javafx.fxml.FXML;
@@ -9,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -30,6 +32,9 @@ public class BlackjackController {
     @FXML private Button btnIniciar, btnPedir, btnPlantar;
     @FXML private Label lblEstado;
     @FXML private Button btnReglas;
+    @FXML private TextField txtSaldo;
+    @FXML private TextField txtMontoApuesta;
+
 
     private ImageView[] casillasCompu;
     private ImageView[] casillasJugador;
@@ -50,6 +55,8 @@ public class BlackjackController {
 
         btnPedir.setDisable(true);
         btnPlantar.setDisable(true);
+
+        actualizarSaldoEnVista();
     }
 
     // Botones
@@ -174,5 +181,43 @@ public class BlackjackController {
             }
             i++;
         }
+    }
+
+    /** Instancia del Modelo */
+    private final Apuesta apuesta = new Apuesta();
+
+    /** Metodo de evento para el botón "APOSTAR" */
+    @FXML
+    private void onApostar() {
+        try {
+            // Convertir el texto a número
+            int monto = Integer.parseInt(txtMontoApuesta.getText());
+
+            if (monto < 10 || monto % 10 != 0) {
+                // Caso A: Números negativos o cero
+                lblEstado.setText("La apuesta debe ser mínimo de 10 y múltiplo de 10.");
+
+            } else if (monto > apuesta.getDineroDisponible()) {
+                // Caso B: Apuesta mayor al saldo que le queda
+                lblEstado.setText("No tienes suficiente saldo para esa apuesta.");
+
+            } else {
+                // Caso C: Apuesta válida
+                apuesta.realizarApuesta(monto);
+                actualizarSaldoEnVista();
+                lblEstado.setText("Apuesta realizada: $" + monto);
+                txtMontoApuesta.clear();
+            }
+
+        } catch (NumberFormatException e) {
+            // Caso D: Si se escribe letras, símbolos o se deja la caja vacía
+            lblEstado.setText("Ingresa un número entero válido.");
+            txtMontoApuesta.clear();
+        }
+    }
+
+    // Metodo auxiliar para mantener la vista sincronizada con el modelo
+    private void actualizarSaldoEnVista() {
+        txtSaldo.setText(String.valueOf(apuesta.getDineroDisponible()));
     }
 }
