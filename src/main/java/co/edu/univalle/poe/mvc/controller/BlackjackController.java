@@ -155,59 +155,12 @@ public class BlackjackController {
             return;
         }
 
-        ronda.Plantar();                                   // 1. el computador recibe sus 2 cartas
+        ronda.Plantar();
         mostrarMano(hboxCompu, casillasCompu, hijosCompu, ronda.getManoCompu());
-
-        boolean bjJugador = ronda.esBlackjackJugador();
-        boolean bjCompu = ronda.esBlackjackCompu();
-        boolean vymJugador = ronda.esVeinteYMedioJugador();
-        boolean vymCompu = ronda.esVeinteYMedioCompu();
 
         int jugador = ronda.getPuntajeJugador();
         int compu = ronda.getPuntajeCompu();
-        String resultado;
-
-        if (bjJugador && bjCompu) {                        // ambos Blackjack: empate
-            resultado = "EMPATE (ambos tienen Blackjack)";
-            apuesta.empatarApuesta();
-        } else if (bjJugador) {                            // solo el jugador: victoria con Blackjack
-            resultado = "¡BLACKJACK! ¡GANASTE!";
-            apuesta.ganarConBlackjack();
-        } else if (bjCompu) {                              // solo el computador
-            resultado = "La computadora tiene Blackjack. PERDISTE";
-            apuesta.perderApuesta();
-        } else if (compu > 21) {                           // el computador se pasó
-            resultado = "La computadora se pasó. ¡GANASTE!";
-            apuesta.ganarApuesta();
-        } else if (vymJugador && vymCompu) {               // ambos Veinte y medio: empate
-            resultado = "EMPATE (ambos tienen Veinte y medio)";
-            apuesta.empatarApuesta();
-        } else if (vymJugador) {                           // Veinte y medio del jugador
-            if (compu == 21) {                             // solo pierde contra 21
-                resultado = "Veinte y medio pierde contra 21. PERDISTE";
-                apuesta.perderApuesta();
-            } else {                                       // gana a cualquier mano menor de 21
-                resultado = "¡VEINTE Y MEDIO! Supera cualquier mano menor de 21. ¡GANASTE!";
-                apuesta.ganarApuesta();
-            }
-        } else if (vymCompu) {                             // Veinte y medio del computador
-            if (jugador == 21) {
-                resultado = "¡GANASTE! Tu 21 supera el Veinte y medio de la computadora.";
-                apuesta.ganarApuesta();
-            } else {
-                resultado = "La computadora tiene Veinte y medio. PERDISTE";
-                apuesta.perderApuesta();
-            }
-        } else if (jugador > compu) {                      // victoria ordinaria
-            resultado = "¡GANASTE!";
-            apuesta.ganarApuesta();
-        } else if (jugador < compu) {                      // derrota
-            resultado = "PERDISTE";
-            apuesta.perderApuesta();
-        } else {                                           // mismo puntaje
-            resultado = "EMPATE";
-            apuesta.empatarApuesta();
-        }
+        String resultado = ronda.resolverRonda(apuesta);     // el modelo decide y liquida
 
         lblEstado.setText("Te plantaste con " + jugador
                 + ". Computadora: " + compu + ". " + resultado);
